@@ -1,0 +1,30 @@
+
+version: '3'
+
+services:
+  seed-node:
+    image: ch_setup:latest
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - seed_node=true
+      - port=8080
+    ports:
+      - 8080:8080
+  node1:
+    image: ch_setup:latest
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: /bin/bash -c "echo 'Waiting for seed node' && sleep 10 && ./ch_setup"
+    environment:
+      - seed_node=false
+      - port=8081
+    ports:
+      - 8081:8081
+    depends_on:
+      - seed-node
+
+  
+
