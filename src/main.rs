@@ -88,8 +88,6 @@ async fn main() {
         )
         .with_state(Arc::clone(&shared_state));
 
-    // Run our app with hyper
-    // add seed port here to [::]
     let mut partial_add = "[::]:".to_string();
     partial_add.push_str(&port);
 
@@ -104,37 +102,41 @@ async fn main() {
     });
 
     println!("Done moving server !!!");
-    /*
-    let client = reqwest::Client::builder()
-                    .no_proxy()
-                    .build()
-                    .unwrap();
-    println!("Creating Client......");
-    let mut path = setttings.seednode.hostname;
-    let port  = setttings.seednode.port.to_string();
-    path.push_str(":");
-    path.push_str(port.to_string().as_str());
-    println!("Path : {:?}", &path);
-    let mut rand = rand::thread_rng();
-    let get_url = format!("http://{}/keys", &path);
-    let post_url = format!("http://{}/{}", &path, rand.next_u64());
+    
+    if !is_seed_node {
+        let client = reqwest::Client::builder()
+                        .no_proxy()
+                        .build()
+                        .unwrap();
+        println!("Creating Client......");
 
-    for _ in 1..4 {
+        let port = std::env::var("seed_port").expect("failed to parse port value from env");
+        // For now hardcoding the container url.
+        let mut path =  "seed-node:".to_string();
+        let port  = port.to_string();
+        path.push_str(port.to_string().as_str());
+        println!("Seed Path : {:?}", &path);
+        let mut rand = rand::thread_rng();
+        let get_url = format!("http://{}/keys", &path);
+        let post_url = format!("http://{}/{}", &path, rand.next_u64());
 
-        println!("Sending Request ");
-        let r = client
-                            .post(&post_url)
-                            .body("abbbb")
-                            .send()
-                            .await
-                            .expect("did not recieve any values");
-        println!("Response : {:?}", r);
+        for _ in 1..4 {
+
+            println!("Sending Request ");
+            let r = client
+                                .post(&post_url)
+                                .body("abbbb")
+                                .send()
+                                .await
+                                .expect("did not recieve any values");
+            println!("Response : {:?}", r);
+        }
+
+        let r = client.get(&get_url).send().await.expect("failed on get");
+
+        println!("Response: {:?}", r);
+
     }
-
-    let r = client.get(&get_url).send().await.expect("failed on get");
-
-    println!("Response: {:?}", r);
-    */
 
     h.await.expect("done waiting ................");
 }

@@ -17,10 +17,11 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    command: /bin/bash -c "echo 'Waiting for seed node' && sleep 10 && ./ch_setup"
+    command: /bin/bash -c "echo 'Waiting for seed node' && sleep 3 && ./ch_setup"
     environment:
       - seed_node=false
       - port=8081
+      - seed_port=8080
     ports:
       - 8081:8081
     depends_on:
