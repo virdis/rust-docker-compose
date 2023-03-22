@@ -91,9 +91,9 @@ async fn main() {
     let mut partial_add = "[::]:".to_string();
     partial_add.push_str(&port);
 
-    println!("Parsed Address {:?} .....", &partial_add);
-    tracing::debug!("listening on {}", &partial_add);
     let partial_add = partial_add.parse().unwrap();
+    dbg!(partial_add);
+    
     let h = tokio::task::spawn(async move {
         axum::Server::bind(&partial_add)
             .serve(app.into_make_service())
